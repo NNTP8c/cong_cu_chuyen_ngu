@@ -6,9 +6,15 @@ from faster_whisper import WhisperModel
 MO_HINH = os.getenv("WHISPER_MODEL", "small")
 KIEU_TINH_TOAN = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
 
-# Tải mô hình vào bộ nhớ (chỉ tải 1 lần khi ứng dụng khởi động để tăng tốc độ)
-print(f"Đang tải cấu hình AI: {MO_HINH} ({KIEU_TINH_TOAN})")
-mo_hinh_ai = WhisperModel(MO_HINH, device="cpu", compute_type=KIEU_TINH_TOAN)
+# Lazy load: tải mô hình lần đầu khi cần (tránh timeout/OOM khi deploy trên Railway)
+_mo_hinh_ai = None
+
+def _get_model():
+    global _mo_hinh_ai
+    if _mo_hinh_ai is None:
+        print(f"Đang tải cấu hình AI: {MO_HINH} ({KIEU_TINH_TOAN})")
+        _mo_hinh_ai = WhisperModel(MO_HINH, device="cpu", compute_type=KIEU_TINH_TOAN)
+    return _mo_hinh_ai
 
 def dich_am_thanh(duong_dan_tep: str, ngon_ngu: str = "auto") -> dict:
     """
@@ -19,7 +25,8 @@ def dich_am_thanh(duong_dan_tep: str, ngon_ngu: str = "auto") -> dict:
     # Thiết lập ngôn ngữ nếu được chỉ định
     ngon_ngu_mo_hinh = None if ngon_ngu == "auto" else ngon_ngu
     
-    # Chạy inference
+    # Chạy inference (model được tải lần đầu tại đây)
+    mo_hinh_ai = _get_model()
     cac_doan_van_ban, thong_tin = mo_hinh_ai.transcribe(
         duong_dan_tep,
         language=ngon_ngu_mo_hinh,
