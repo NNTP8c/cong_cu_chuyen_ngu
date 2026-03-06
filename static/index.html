@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Chuyển Âm thanh thành Văn bản</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Công cụ Chuyển Âm thanh thành Văn bản</h1>
+            <p>Tải lên tệp âm thanh của bạn và chúng tôi sẽ chuyển nó thành văn bản.</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="file-picker">
+                    <input type="file" id="tep_am_thanh" accept=".mp3,.wav,.m4a,.ogg,.webm">
+                    <label for="tep_am_thanh" id="nhan_tep">Chọn tệp âm thanh hoặc kéo thả vào đây</label>
+                </div>
+                
+                <div class="options">
+                    <label for="ngon_ngu">Ngôn ngữ:</label>
+                    <select id="ngon_ngu">
+                        <option value="auto">Tự động phát hiện</option>
+                        <option value="vi">Tiếng Việt</option>
+                        <option value="en">Tiếng Anh</option>
+                    </select>
+                </div>
+
+                <button id="nut_chuyen_doi" disabled>Chuyển thành văn bản</button>
+            </div>
+
+            <div id="trang_thai_tai" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Đang xử lý âm thanh... Vui lòng đợi trong giây lát.</p>
+            </div>
+
+            <div id="vung_ket_qua" class="result-section hidden">
+                <div class="result-header">
+                    <h2>Văn bản đầu ra</h2>
+                    <span id="thong_tin_bo_sung" class="info-badge"></span>
+                </div>
+                <textarea id="van_ban_ket_qua" readonly></textarea>
+                <div class="result-actions">
+                    <button id="nut_sao_chep">Sao chép</button>
+                    <button id="nut_tai_ve">Tải về (.txt)</button>
+                </div>
+            </div>
+
+            <div id="thong_bao_loi" class="error-message hidden"></div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
